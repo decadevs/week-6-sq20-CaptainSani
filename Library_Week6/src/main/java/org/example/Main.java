@@ -3,14 +3,13 @@ package org.example;
 import org.example.enums.Role;
 import org.example.model.Book;
 import org.example.model.Library;
-import org.example.model.Library2;
 import org.example.model.User;
 import org.example.service.BorrowerService;
-import org.example.service.LibraryService;
-import org.example.service.LibraryService2;
 import org.example.service.Impl.BorrowerServiceImpl;
 import org.example.service.Impl.LibraryServiceImpl;
-import org.example.service.Impl.LibraryService2Impl;
+import org.example.service.LibraryService;
+
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,45 +17,46 @@ import java.util.PriorityQueue;
 
 public class Main {
     public static void main(String[] args) {
-        User john = new User("John", Role.JUNIOR_STUDENT, new ArrayList<>());
-        User james = new User("James", Role.SENIOR_STUDENT, new ArrayList<>());
-        User shadyvee = new User("shadyvee", Role.SENIOR_STUDENT, new ArrayList<>());
-        User shamah = new User("Shamah", Role.TEACHER, new ArrayList<>());
-        User mathew = new User("Mathew", Role.TEACHER, new ArrayList<>());
-        User librarian = new User("Librarian", Role.LIBRARIAN, new ArrayList<>());
 
-        Book efj = new Book("Effective Java", "Joshua Bloch", 6);
-        Book htdp = new Book("How to Design", "Matthias Felleisen", 5);
-        Book cc = new Book("Clean Code", "Robert C. Martin", 7);
+        //ADDING USERS
+        User user1 = new User("Jnr Student Favour Ameh", Role.JNR_STUDENT, new ArrayList<>());
+        User user2 = new User("Teacher Manasseh Obaje", Role.TEACHER, new ArrayList<>());
+        User user3 = new User("Snr Student Destiny Etiko", Role.SNR_STUDENT, new ArrayList<>());
+        User user4 = new User("Snr Student Mercy Johnson", Role.SNR_STUDENT, new ArrayList<>());
+        User user5 = new User("Librarian", Role.LIBRARIAN, new ArrayList<>());
 
-        Library library1 = new Library("Central Library", new ArrayList<>(), new PriorityQueue<>(), librarian);
-        Library2 library2 = new Library2("James Library", new ArrayList<>(), new LinkedList<>(), librarian);
+        Book book1 = new Book("Java Methods", "James Bloch", 3);
+        Book book2 = new Book("Looping in Java", "Damian Wonder", 5);
+        Book book3 = new Book("Intro to OOP", "Mary-Ann Ukpengit ", 8);
 
-        library1.setListOfBooks(List.of(efj, htdp, cc));
-        library2.setListOfBooks(List.of(efj, htdp, cc));
 
-        LibraryService libraryService1 = new LibraryServiceImpl();
-        LibraryService2 libraryService2 = new LibraryService2Impl(library2);
+        Library library = new Library("Central Library", new ArrayList<>(), new PriorityQueue<>(), new LinkedList<>(), new User());
 
+
+        library.setListOfBooks(List.of(book1, book2, book3));
+
+        LibraryService libraryService = new LibraryServiceImpl();
         BorrowerService borrowerService = new BorrowerServiceImpl();
 
-        //When the same book is borrowed by multiple people, the person with the highest priority should be given the book first.
-        borrowerService.borrowBookWithPriority("Effective Java", james, library1);
-        borrowerService.borrowBookWithPriority("Effective Java", john, library1);
-        borrowerService.borrowBookWithPriority("Effective Java", shadyvee, library1);
-        borrowerService.borrowBookWithPriority("Effective Java", shamah, library1);
-        borrowerService.borrowBookWithPriority("Effective Java", mathew, library1);
-        libraryService1.issueBook("Effective Java");
 
-        System.out.println("***********************************************************");
+        //GIVE BOOK
+        borrowerService.requestBook("Looping in Java", user1, library);
+        borrowerService.requestBook("Looping in Java", user2, library);
+        borrowerService.requestBook("Looping in Java", user3, library);
 
-        //When the same book is borrowed by multiple people, the person who requested the book first should be given the book first.
-        borrowerService.borrowWithoutPriority("How to Design", james, library2);
-        borrowerService.borrowWithoutPriority("How to Design", john, library2);
-        borrowerService.borrowWithoutPriority("How to Design", shamah, library2);
+        System.out.println("*********************************************************");
+        libraryService.giveBook("Looping in Java", library);
 
-        libraryService2.issueBook("How to Design");
-        System.out.println(james.getBorrowedBooks());
+        System.out.println("*********************************************************");
+
+        //GIVE BOOK FIFO
+        borrowerService.requestBookFIFO("Java Methods", user1, library);
+        borrowerService.requestBookFIFO("Java Methods", user2, library);
+        borrowerService.requestBookFIFO("Java Methods", user3, library);
+        borrowerService.requestBookFIFO("Java Methods", user4, library);
+
+        libraryService.giveBookFIFO("Java Methods", library);
+
 
     }
 }

@@ -1,19 +1,20 @@
 package org.example.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
 public class Book {
-    private String title;
+    private String bookTitle;
     private String author;
     private int noOfCopies;
 
-    public Book(String title, String author, int noOfCopies) {
-        this.title = title;
+    public Book(String bookTitle, String author, int noOfCopies) {
+        this.bookTitle = bookTitle;
         this.author = author;
         this.noOfCopies = noOfCopies;
     }
+
 }

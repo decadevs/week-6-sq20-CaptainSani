@@ -1,15 +1,14 @@
 package org.example.model;
-
+import java.util.List;
 import org.example.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
+
+
 public class User {
     private String name;
     private Role role;
@@ -24,3 +23,5 @@ public class User {
         this.order = counter++;
     }
 }
+
+

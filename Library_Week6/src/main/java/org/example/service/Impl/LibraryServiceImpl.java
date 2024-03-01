@@ -1,29 +1,63 @@
 package org.example.service.Impl;
-
+import org.example.exception.LibraryException;
+import lombok.*;
 import org.example.model.Book;
 import org.example.model.Library;
+import org.example.model.User;
 import org.example.service.LibraryService;
 
-import java.util.List;
+import java.util.*;
 
-//@NoArgsConstructor
-//@AllArgsConstructor
+
+@Data
+
 
 public class LibraryServiceImpl implements LibraryService {
-    private Library library;
+
+
 
     @Override
-    public void issueBook(String bookName) {
+    public void giveBook(String titleOfBook, Library library) {
         library.getListOfBooks().stream()
-                .filter(book -> book.getTitle().equalsIgnoreCase(bookName))
-                .forEach(book -> library.getBorrowers().stream()
-                        .filter(person -> book.getNoOfCopies() > 0)
-                        .forEach(person -> {
-                            book.setNoOfCopies(book.getNoOfCopies() - 1);
-                            List<Book> borrowedBooks = person.getBorrowedBooks();
-                            borrowedBooks.add(book);
-                            person.setBorrowedBooks(borrowedBooks);
-                            System.out.println(bookName + " is issued to " + person.getName());
-                        }));
+                .filter(book -> book.getBookTitle().equalsIgnoreCase(titleOfBook))
+                .forEach(book -> {
+                    library.getBorrowers().stream()
+                            .filter(user -> book.getNoOfCopies() > 0)
+                            .forEach(user -> {
+                                book.setNoOfCopies(book.getNoOfCopies() - 1);
+                                List<Book> borrowedBooks = user.getBorrowedBooks();
+                                borrowedBooks.add(book);
+                                user.setBorrowedBooks(borrowedBooks);
+                                System.out.println(user.getName() + " has borrowed " + titleOfBook);
+                            });
+                });
+    }
+
+
+    @Override
+    public void giveBookFIFO(String titleOfBook, Library library) {
+        Queue<User> userQueueFIFO = library.getUserQueueFIFO();
+        if (userQueueFIFO != null) {
+            userQueueFIFO.forEach(user -> {
+                library.getListOfBooks().stream().filter(book -> book.getBookTitle().equalsIgnoreCase(titleOfBook))
+                        .forEach(book -> {
+                            if (book.getNoOfCopies() > 0) {
+                                book.setNoOfCopies(book.getNoOfCopies() - 1);
+                                List<Book> borrowedBooks = user.getBorrowedBooks();
+                                borrowedBooks.add(book);
+                                user.setBorrowedBooks(borrowedBooks);
+                                System.out.println(user.getName() + " has borrowed " + titleOfBook);
+                            } else {
+                                try {
+                                    System.out.println("Book is not available, check later");
+                                } catch (Exception e) {
+                                    throw new LibraryException("Book is not available");
+                                }
+                            }
+                        });
+            });
+        }
     }
 }
+
+
